@@ -26,6 +26,7 @@ export default function Navbar() {
         method: "eth_getBalance",
         params: [accounts[0], "latest"],
       });
+      console.log(balance);
       add({
         account: accounts[0],
         balance: +ethers.formatEther(balance).slice(0, 5),

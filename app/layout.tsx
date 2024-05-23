@@ -3,6 +3,7 @@ import { JetBrains_Mono, Rubik } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/common/navbar/navbar";
 import MetamaskDetectionWrapper from "./components/wraps/metamask_detection_wrap";
+import QueryProviderWrapper from "./components/wraps/query_wrapper";
 
 const jet_brains = JetBrains_Mono({ subsets: ["latin"] });
 const rubik = Rubik({ subsets: ["latin"] });
@@ -21,10 +22,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={rubik.className}>
         <div className="flex flex-col w-screen h-screen">
-          <MetamaskDetectionWrapper>
-            <Navbar />
-            {children}
-          </MetamaskDetectionWrapper>
+          <QueryProviderWrapper>
+            <MetamaskDetectionWrapper>
+              <Navbar />
+              {children}
+            </MetamaskDetectionWrapper>
+          </QueryProviderWrapper>
         </div>
       </body>
     </html>
