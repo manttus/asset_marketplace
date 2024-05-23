@@ -5,7 +5,7 @@ import Select from "react-select";
 import { FieldProps } from "@/app/interfaces/elements";
 
 export function TextField<T extends FieldValues>(
-  props: FieldProps<T, HTMLInputElement>,
+  props: FieldProps<T, HTMLInputElement>
 ) {
   return (
     <Controller
@@ -19,7 +19,7 @@ export function TextField<T extends FieldValues>(
 TextField.displayName = "TextField";
 
 export function PasswordField<T extends FieldValues>(
-  props: FieldProps<T, HTMLInputElement>,
+  props: FieldProps<T, HTMLInputElement>
 ) {
   const [obscured, setObscured] = useState<boolean>(true);
   return (
@@ -30,7 +30,7 @@ export function PasswordField<T extends FieldValues>(
         <div className="relative">
           <input type={obscured ? "password" : "text"} {...props} {...field} />
           <div
-            className="absolute min-w-16 right-0 top-2 border-l border-gray-300 px-2 text-gray-400 cursor-pointer"
+            className="absolute min-w-16 right-0 top-2 border-l border-gray-400 px-2 text-gray-400 cursor-pointer"
             onClick={() => setObscured((prev) => !prev)}
           >
             {obscured ? "Show" : "Hide"}
@@ -44,21 +44,25 @@ export function PasswordField<T extends FieldValues>(
 PasswordField.displayName = "PasswordField";
 
 export function SelectField<T extends FieldValues>(
-  props: FieldProps<T, HTMLSelectElement>,
+  props: FieldProps<T, HTMLSelectElement>
 ) {
   return (
     <Controller
       name={props.name}
       control={props.control}
       render={({ field }) => (
-        <Select
-          className={props.className}
-          {...field}
-          value={props.options?.find((c) => c.value === field.value)}
-          onChange={(val) => field.onChange(val)}
-          defaultValue={props.options?.find((c) => c.value === field.value)}
-          options={props.options}
-        />
+        <select className={props.className} {...field}>
+          <option value={""}>Select Heirarchy</option>
+          {props.options?.map((item) => (
+            <option
+              key={item.value}
+              value={item.value}
+              className={props.className}
+            >
+              {item.label}
+            </option>
+          ))}
+        </select>
       )}
     />
   );
@@ -67,7 +71,7 @@ export function SelectField<T extends FieldValues>(
 SelectField.displayName = "SelectField";
 
 export function FileField<T extends FieldValues>(
-  props: FieldProps<T, HTMLInputElement>,
+  props: FieldProps<T, HTMLInputElement>
 ) {
   return (
     <Controller
@@ -87,7 +91,7 @@ export function FileField<T extends FieldValues>(
 FileField.displayName = "FileField";
 
 export function QuillField<T extends FieldValues>(
-  props: FieldProps<T, HTMLInputElement>,
+  props: FieldProps<T, HTMLInputElement>
 ) {
   return (
     <Controller
@@ -107,7 +111,7 @@ export function QuillField<T extends FieldValues>(
 QuillField.displayName = "QuillField";
 
 export function TextArea<T extends FieldValues>(
-  props: FieldProps<T, HTMLTextAreaElement>,
+  props: FieldProps<T, HTMLTextAreaElement>
 ) {
   return (
     <Controller

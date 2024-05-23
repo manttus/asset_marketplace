@@ -10,9 +10,9 @@
 # Contract ABI
 /contract_data
 
-./hardhat/artifacts
-./hardhat/cache
-./hardhat/typechain-types
+/artifacts
+/cache
+/typechain-types
 
 # testing
 /coverage

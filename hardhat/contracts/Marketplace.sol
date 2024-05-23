@@ -50,6 +50,17 @@ contract Market is Events {
         return true;
     }
 
+    function _isListed(uint256 tokenId) external returns (bool){
+        for (uint256 _indi = 1; _indi <= _index; _indi++) {
+            if (_listing[_indi]._token._id == tokenId) {
+                if(_listing[_indi]._active) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     function _cancelListing(uint256 _listingId, address _owner) public {
         ListingType storage list = _listing[_listingId];
         require(list._active, "NFT not Listed");

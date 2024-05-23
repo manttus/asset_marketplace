@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono } from "next/font/google";
+import { JetBrains_Mono, Rubik } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/common/navbar/navbar";
 import MetamaskDetectionWrapper from "./components/wraps/metamask_detection_wrap";
 
 const jet_brains = JetBrains_Mono({ subsets: ["latin"] });
+const rubik = Rubik({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Digital Asset Marketplace",
@@ -18,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={jet_brains.className}>
+      <body className={rubik.className}>
         <div className="flex flex-col w-screen h-screen">
           <MetamaskDetectionWrapper>
             <Navbar />
