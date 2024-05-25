@@ -3,7 +3,7 @@ import hardhat from "hardhat";
 import path from "path";
 import fs from "fs";
 
-function saveContractData(name: string, contract: Contract, address: string) {
+function saveContractData(name: string, contract: any, address: string) {
   const contracts_data = path.join(__dirname, "../..", "contract_data");
 
   if (!fs.existsSync(contracts_data)) {
@@ -19,18 +19,9 @@ function saveContractData(name: string, contract: Contract, address: string) {
 
 async function main() {
   const [deployer] = await hardhat.ethers.getSigners();
-  const nft = await hardhat.ethers.getContractFactory("NFT");
-  const nft_contract = await nft.deploy();
-  const marketplace = await hardhat.ethers.getContractFactory("Market");
-  const marketplace_contract = await marketplace.deploy(
-    await nft_contract.getAddress()
-  );
-  saveContractData("NFT", nft_contract, await nft_contract.getAddress());
-  saveContractData(
-    "Market",
-    marketplace_contract,
-    await marketplace_contract.getAddress()
-  );
+  const marketplace = await hardhat.ethers.getContractFactory("Marketplace");
+  const marketplace_contract = await marketplace.deploy();
+  saveContractData("Marketplace", marketplace_contract, await marketplace_contract.getAddress());
 }
 
 main().catch((error) => {
