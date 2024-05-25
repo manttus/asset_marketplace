@@ -2,9 +2,11 @@
 
 import MarketCard from "../components/common/market/card/market_card";
 import Loader from "../components/loading/loader";
+import NoResult from "../components/loading/no_result";
 import { useAccount } from "../feature/store/useAccount";
 import useAsyncMutation from "../hooks/useAsyncMutation";
 import { useAsyncQuery } from "../hooks/useAsyncQuery";
+import useToastify from "../hooks/useToastify";
 import marketAdapter from "./adapters/market_adapter";
 import marketService from "./services/market_service";
 
@@ -26,13 +28,20 @@ export default function Home() {
     adapter: marketAdapter,
   });
 
+  const { success, error } = useToastify();
+
   const { mutateAsync } = useAsyncMutation({
     key: ["buy"],
-    fn: async (payload: { index: number; price: number }) => {
+    fn: async (payload: { index: string; price: string }) => {
       const response = await marketService();
-      return response.buyToken(BigInt(payload.index), payload.price);
+      return response.buyToken(payload.index, payload.price);
     },
-    onSuccess: (data) => {},
+    onSuccess: (data) => {
+      success("Asset purchased succesfully");
+    },
+    onError: (_) => {
+      error("Failed to buy asset");
+    },
   });
 
   if (isLoading) {
@@ -40,15 +49,16 @@ export default function Home() {
   }
 
   return (
-    <main className="flex p-5">
-      {(data as MarketListing[]).map((item: any) => (
+    <main className="flex h-full p-5">
+      {data.length === 0 && <NoResult />}
+      {data.map((item: any) => (
         <MarketCard
           key={item.id}
           id={item.id}
           name={item.title}
           image={item.image}
           price={item.price}
-          buy={async (id: number, price: number) =>
+          buy={async (id: string, price: string) =>
             mutateAsync({ index: id, price: price })
           }
         />

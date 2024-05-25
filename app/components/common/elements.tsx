@@ -52,7 +52,7 @@ export function SelectField<T extends FieldValues>(
       control={props.control}
       render={({ field }) => (
         <select className={props.className} {...field}>
-          <option value={""}>Select Heirarchy</option>
+          <option value={""}>Select Options</option>
           {props.options?.map((item) => (
             <option
               key={item.value}

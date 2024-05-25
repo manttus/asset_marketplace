@@ -21,9 +21,9 @@ class MarketService {
     return response as MarketListing[];
   }
 
-  async buyToken(index: number, price: number) {
+  async buyToken(index: string, price: string) {
     await this.market!.buyToken(index, {
-      value: price.toString(),
+      value: ethers.parseUnits(price.toString()),
     });
   }
 }
