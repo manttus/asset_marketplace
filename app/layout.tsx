@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={jet_brains.className}>
+      <body className={rubik.className}>
         <div className="flex flex-col w-screen h-screen">
           <QueryProviderWrapper>
             <MetamaskDetectionWrapper>
