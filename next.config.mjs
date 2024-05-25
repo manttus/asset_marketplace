@@ -5,6 +5,9 @@ const nextConfig = {
       {
         hostname: "res.cloudinary.com",
       },
+      {
+        hostname: "blush-growing-quokka-446.mypinata.cloud",
+      },
     ],
   },
 };
