@@ -1,107 +1,108 @@
 // SPDX-License-Identifier: MIT
+pragma solidity ^0.8.25;
 
-pragma solidity ^0.8.17;
+import "./types/token.sol";
+import "./events/events.sol";
 
-import "./types/TokenTypes.sol";
-import "./NFT.sol";
-import "./events/Events.sol";
-import "./types/ListingTypes.sol";
-
-contract Market is Events {
-    NFT private _nftContract;
-
+contract Marketplace is events {
+    address private owner;
     uint256 private _index = 0;
 
-    constructor(address nftAddress) {
-        _nftContract = NFT(nftAddress);
+    mapping(uint256 => Token) private tokens;
+    mapping(string => bool) private titles;
+    mapping(string => bool) private assets;
+
+    constructor() {
+        owner = msg.sender;
     }
 
-    mapping(uint256 => ListingType) public _listing;
+    function mint(
+        address minter,
+        string memory title,
+        string memory description,
+        string memory category,
+        string memory asset
+    ) external returns (uint256) {
+        require(!titles[title] && !assets[asset], "Duplicate NFT");
+        _index += 1;
+        titles[title] = true;
+        assets[asset] = true;
+        tokens[_index] = Token({
+            id: _index,
+            owner: minter,
+            asset: asset,
+            title: title,
+            description: description,
+            category: category,
+            isForSale: false,
+            price: 0
+        });
+        emit Transfer(address(0), minter, _index);
+        return _index;
+    }
 
-    function _createListing(
-        uint256 tokenId,
-        uint256 price,
-        address _owner
-    ) external returns (bool) {
-        require(
-            _nftContract._ownerOf(tokenId)._owner == _owner,
-            "No Token Minted!"
-        );
-
-        // check if token is already listed
-        for (uint256 _indi = 1; _indi <= _index; _indi++) {
-            if (_listing[_indi]._token._id == tokenId) {
-                require(
-                    _listing[_indi]._active == false,
-                    "Token already listed"
-                );
-                _listing[_indi]._price = price;
-                _listing[_indi]._active = true;
-                return true;
+    function listings() public view returns (Token[] memory) {
+        uint256 forSaleCount = 0;
+        for (uint256 i = 1; i <= _index; i++) {
+            if (tokens[i].isForSale) {
+                forSaleCount++;
             }
         }
-        _index += 1;
-        _listing[_index] = ListingType(
-            _index,
-            price,
-            _nftContract._ownerOf(tokenId),
-            true
-        );
+
+        Token[] memory list = new Token[](forSaleCount);
+        uint256 _idx = 0;
+        for (uint256 i = 1; i <= _index; i++) {
+            if (tokens[i].isForSale) {
+                list[_idx] = tokens[i];
+                _idx++;
+            }
+        }
+        return list;
+    }
+
+    function mints(address minter) public view returns (Token[] memory) {
+        uint256 count = 0;
+        for (uint256 i = 1; i <= _index; i++) {
+            if (tokens[i].owner == minter) {
+                count++;
+            }
+        }
+
+        Token[] memory list = new Token[](count);
+        uint256 _idx = 0;
+        for (uint256 i = 1; i <= _index; i++) {
+            if (tokens[i].owner == minter) {
+                list[_idx] = tokens[i];
+                _idx++;
+            }
+        }
+        return list;
+    }
+
+    function listToken(uint256 index, uint256 price) external returns (bool) {
+        require(tokens[index].id == index, "No Token Found");
+        require(tokens[index].owner == msg.sender, "You are not the owner");
+        tokens[index].isForSale = true;
+        tokens[index].price = price;
         return true;
     }
 
-    function _isListed(uint256 tokenId) external returns (bool){
-        for (uint256 _indi = 1; _indi <= _index; _indi++) {
-            if (_listing[_indi]._token._id == tokenId) {
-                if(_listing[_indi]._active) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    function removeToken(uint256 index) external {
+        require(tokens[index].id == index, "No Token Found");
+        require(tokens[index].owner == msg.sender, "You are not the owner");
+        tokens[index].isForSale = false;
+        tokens[index].price = 0;
     }
 
-    function _cancelListing(uint256 _listingId, address _owner) public {
-        ListingType storage list = _listing[_listingId];
-        require(list._active, "NFT not Listed");
-        require(list._token._owner == _owner, "You are not the seller");
-        list._active = false;
-    }
-
-    function _buyToken(uint256 _listingId, address buyer) external payable {
-        ListingType storage list = _listing[_listingId];
-        require(list._active, "NFT not Listed");
-        require(msg.value >= list._price, "Insufficient Balance");
-        _nftContract._transferFrom(list._token._owner, buyer, list._token._id);
-        _editListing(list._token._id, _listingId, buyer, list._price, false);
-    }
-
-    function _getListings() public view returns (ListingType[] memory) {
-        ListingType[] memory _toks = new ListingType[](_index);
-        uint256 _idx = 0;
-        for (uint256 _indi = 1; _indi <= _index; _indi++) {
-            if (_listing[_indi]._active) {
-                _toks[_idx] = _listing[_indi];
-            }
-        }
-        return _toks;
-    }
-
-    function _editListing(
-        uint256 _tokenId,
-        uint256 _listingId,
-        address _owner,
-        uint256 newPrice,
-        bool _isListed
-    ) public {
-        ListingType storage list = _listing[_listingId];
-        require(list._active, "NFT not Listed");
-        require(
-            _nftContract._ownerOf(_tokenId)._owner == _owner,
-            "You are not the seller"
-        );
-        list._price = newPrice;
-        list._active = _isListed;
-        list._token._owner = _owner;
+    function buyToken(uint256 index) external payable {
+        require(tokens[index].isForSale, "Token is not for sale");
+        require(msg.value >= tokens[index].price, "Insufficient funds");
+        address previousOwner = tokens[index].owner;
+        tokens[index].owner = msg.sender;
+        tokens[index].isForSale = false;
+        tokens[index].price = 0;
+        payable(previousOwner).transfer(msg.value);
+        emit Transfer(previousOwner, msg.sender, index);
     }
 }
+
