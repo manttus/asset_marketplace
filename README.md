@@ -28,7 +28,7 @@ Ensure you have the following installed on your local machine
    NEXT_PUBLIC_PINATA_JWT='ENTER YOUR PINATA JWT FROM STEP 1'
    NEXT_PUBLIC_PINATA_GATEWAY='ENTER THE PINATA GATEWAY FROM YOUR PINATA PROFILE'
    ```
-5. Also update the pinata config in `next.config.mjs`
+5. Also update the pinata config in `next.config.mjs` for images
    ```js
    {
      hostname: "ENTER THE PINATA GATEWAY FROM YOUR PINATA PROFILE",
