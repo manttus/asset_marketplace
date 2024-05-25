@@ -6,6 +6,7 @@ interface IAccountStore {
   add: (payload: { account: string; balance: number }) => void;
   remove: () => void;
   balance: number;
+  updateBalance: (balance: number) => void;
 }
 
 export const useAccount = create<IAccountStore>()(
@@ -15,11 +16,12 @@ export const useAccount = create<IAccountStore>()(
       balance: 0.0,
       add: (payload: { account: string; balance: number }) =>
         set({ account: payload.account, balance: payload.balance }),
-      remove: () => set({ account: "" }),
+      updateBalance: (balance: number) => set({ balance }),
+      remove: () => set({ account: "", balance: 0 }),
     }),
     {
       name: "account",
       storage: createJSONStorage(() => sessionStorage),
-    },
-  ),
+    }
+  )
 );
