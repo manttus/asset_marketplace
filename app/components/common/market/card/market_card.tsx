@@ -14,7 +14,7 @@ export default function MarketCard({
   buy: (id: string, price: string) => Promise<void>;
 }) {
   return (
-    <div className="border border-gray-200 w-60 h-72 flex flex-col justify-between items-center py-3 gap-2 rounded-[1rem]">
+    <div className="border border-gray-300 w-60 h-72 flex flex-col justify-between items-center py-3 gap-2 rounded-[1rem]">
       <div className="border-y w-52 h-52 relative border border-gray-400 rounded-[1rem]">
         <p className=" flex justify-center items-center border border-gray-500 rounded-full absolute bg-gray-200 top-2 left-2 z-30 py-1 px-2">
           {name}
