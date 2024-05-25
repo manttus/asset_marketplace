@@ -41,10 +41,10 @@ contract Marketplace is events {
         return _index;
     }
 
-    function listings() public view returns (Token[] memory) {
+    function listings(address viewer) public view returns (Token[] memory) {
         uint256 forSaleCount = 0;
         for (uint256 i = 1; i <= _index; i++) {
-            if (tokens[i].isForSale) {
+            if (tokens[i].isForSale && tokens[i].owner != viewer) {
                 forSaleCount++;
             }
         }
@@ -52,7 +52,7 @@ contract Marketplace is events {
         Token[] memory list = new Token[](forSaleCount);
         uint256 _idx = 0;
         for (uint256 i = 1; i <= _index; i++) {
-            if (tokens[i].isForSale) {
+            if (tokens[i].isForSale && tokens[i].owner != viewer) {
                 list[_idx] = tokens[i];
                 _idx++;
             }
