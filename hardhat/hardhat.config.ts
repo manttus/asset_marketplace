@@ -6,10 +6,10 @@ const config: HardhatUserConfig = {
   defaultNetwork: "localhost",
   networks: {
     localhost: {
-      url: "http://127.0.0.1:8888",
-    },
-    hardnode: {
       url: "http://127.0.0.1:8545",
+    },
+    ganache: {
+      url: "http://127.0.0.1:8888",
     },
   },
 };
