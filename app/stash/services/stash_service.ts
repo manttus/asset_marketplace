@@ -8,17 +8,25 @@ type StashListing = {
 };
 
 class StashService {
-  nft: Contract | undefined;
+  market: Contract | undefined;
   constructor() {
-    this.nft = undefined;
+    this.market = undefined;
   }
   async initialize() {
-    const { nft } = await load();
-    this.nft = nft;
+    const market = await load();
+    this.market = market;
   }
-  async getStash(account: string): Promise<StashListing[]> {
-    const response = await this.nft?._getTokens(account);
+  async getMinted(account: string): Promise<StashListing[]> {
+    const response = await this.market?.mints(account);
     return response as StashListing[];
+  }
+  async listAsset(index: number, price: number) {
+    const response = await this.market?.listToken(index, +price);
+    return response;
+  }
+  async removeList(index: number) {
+    const response = await this.market?.removeToken(index);
+    return response;
   }
 }
 const stashService = new StashService();

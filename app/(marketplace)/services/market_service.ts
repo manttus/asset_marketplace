@@ -1,5 +1,5 @@
 import { load } from "@/app/contracts";
-import { Contract } from "ethers";
+import { Contract, ethers } from "ethers";
 
 type MarketListing = {
   id: string;
@@ -13,12 +13,18 @@ class MarketService {
     this.market = undefined;
   }
   async initialize() {
-    const { market } = await load();
+    const market = await load();
     this.market = market;
   }
-  async getMarketData(): Promise<MarketListing[]> {
-    const response = await this.market?._getListings();
+  async getMarketData(address: string): Promise<MarketListing[]> {
+    const response = await this.market!.listings(address);
     return response as MarketListing[];
+  }
+
+  async buyToken(index: number, price: number) {
+    await this.market!.buyToken(index, {
+      value: price.toString(),
+    });
   }
 }
 const marketService = new MarketService();

@@ -7,9 +7,11 @@ import {
   TextArea,
   TextField,
 } from "../components/common/elements";
-import { useMintAsset } from "../hooks/useContract";
 import { useAccount } from "../feature/store/useAccount";
 import { TokenType } from "../constants/options";
+import useAsyncMutation from "../hooks/useAsyncMutation";
+import mintService from "./services/mint_service";
+import { IMintAsset } from "../interfaces/market";
 
 interface IMintForm {
   asset: FileList;
@@ -28,17 +30,27 @@ export default function Home() {
       title: "",
     },
   });
+
   const { account } = useAccount();
 
-  const { mint } = useMintAsset();
+  const { mutateAsync } = useAsyncMutation({
+    key: ["mint"],
+    fn: async (data: IMintAsset) => {
+      const response = await mintService();
+      const minted = await response.mint(data);
+      console.log("Hello", minted);
+      return minted;
+    },
+    onSuccess: (data) => {},
+  });
 
   async function mintAsset(data: IMintForm) {
-    await mint({
+    await mutateAsync({
       ...data,
       type: data.type,
       category: "default",
       asset:
-        "https://res.cloudinary.com/dov5ewbhf/image/upload/v1711560037/xk7v26hfulu3ds7we9ij.jpg",
+        "https://res.cloudinary.com/dqarajag2/image/upload/v1684408089/pmzikrcctceolylsmuy9.jpg",
       address: account,
     });
   }
