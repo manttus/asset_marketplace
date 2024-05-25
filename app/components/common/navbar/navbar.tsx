@@ -26,7 +26,6 @@ export default function Navbar() {
         method: "eth_getBalance",
         params: [accounts[0], "latest"],
       });
-      console.log(balance);
       add({
         account: accounts[0],
         balance: +ethers.formatEther(balance).slice(0, 5),
@@ -47,6 +46,7 @@ export default function Navbar() {
           layout="fill"
           quality={100}
           onClick={() => router.push("/")}
+          aria-label="Visit Marketplace"
         />
       </div>
       {!account ? (
