@@ -5,6 +5,8 @@ import Navbar from "./components/common/navbar/navbar";
 import MetamaskDetectionWrapper from "./components/wraps/metamask_detection_wrap";
 import QueryProviderWrapper from "./components/wraps/query_wrapper";
 import ConnectionWrapper from "./components/wraps/connection_wrapper";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const jet_brains = JetBrains_Mono({ subsets: ["latin"] });
 const rubik = Rubik({ subsets: ["latin"] });
@@ -26,6 +28,7 @@ export default function RootLayout({
           <QueryProviderWrapper>
             <MetamaskDetectionWrapper>
               <Navbar />
+              <ToastContainer />
               <ConnectionWrapper>{children}</ConnectionWrapper>
             </MetamaskDetectionWrapper>
           </QueryProviderWrapper>
