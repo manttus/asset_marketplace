@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "./components/common/navbar/navbar";
 import MetamaskDetectionWrapper from "./components/wraps/metamask_detection_wrap";
 import QueryProviderWrapper from "./components/wraps/query_wrapper";
+import ConnectionWrapper from "./components/wraps/connection_wrapper";
 
 const jet_brains = JetBrains_Mono({ subsets: ["latin"] });
 const rubik = Rubik({ subsets: ["latin"] });
@@ -20,12 +21,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={rubik.className}>
+      <body className={jet_brains.className}>
         <div className="flex flex-col w-screen h-screen">
           <QueryProviderWrapper>
             <MetamaskDetectionWrapper>
               <Navbar />
-              {children}
+              <ConnectionWrapper>{children}</ConnectionWrapper>
             </MetamaskDetectionWrapper>
           </QueryProviderWrapper>
         </div>
