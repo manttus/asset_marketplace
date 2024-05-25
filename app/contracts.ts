@@ -1,6 +1,5 @@
 import { ethers } from "ethers";
-import market_contract from "../contract_data/Market.json";
-import nft_contract from "../contract_data/NFT.json";
+import market_contract from "../contract_data/Marketplace.json";
 
 export async function load() {
   const provider = new ethers.BrowserProvider(window.ethereum);
@@ -10,10 +9,5 @@ export async function load() {
     market_contract.contract.abi,
     signer
   );
-  const nft = new ethers.Contract(
-    nft_contract.address,
-    nft_contract.contract.abi,
-    signer
-  );
-  return { market, nft };
+  return market;
 }
