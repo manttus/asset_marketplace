@@ -1,6 +1,5 @@
 function listingAdapter(proxyObject: any): any[] {
   const target = proxyObject;
-
   const resultArray = target.map((tar: any) => {
     return {
       id: tar[0],
