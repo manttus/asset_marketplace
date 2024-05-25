@@ -50,27 +50,33 @@ export default function Navbar() {
         />
       </div>
       {!account ? (
-        <button className="border h-12 px-4" onClick={getAccount}>
+        <button
+          className="border h-12 px-4 rounded-[1rem]"
+          onClick={getAccount}
+        >
           Connect
         </button>
       ) : (
         <div className="flex gap-2">
           <button
             type="button"
-            className="border h-12 px-4 bg-[#3361FF] text-white text-[1rem]"
+            className="border h-12 px-4 bg-[#3361FF] text-white text-[1rem] rounded-[1rem]"
             onClick={() => router.push("/mint")}
           >
-            Create
+            Start Creating
           </button>
-          <button className="border h-12 px-4" onClick={removeAccount}>
+          <button
+            className="border h-12 px-4 rounded-[1rem]"
+            onClick={removeAccount}
+          >
             {balance}
           </button>
           <button
             type="button"
-            className="border h-12 px-4"
+            className="border h-12 px-4 rounded-[1rem]"
             onClick={() => router.push("/stash")}
           >
-            Stash
+            Inventory
           </button>
         </div>
       )}
