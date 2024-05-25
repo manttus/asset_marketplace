@@ -20,7 +20,7 @@ export default function Home() {
   const { account } = useAccount();
 
   const { data, isLoading } = useAsyncQuery({
-    key: ["market"],
+    key: ["market", account],
     fn: async () => {
       const response = await marketService();
       return response.getMarketData(account);
@@ -42,6 +42,7 @@ export default function Home() {
     onError: (_) => {
       error("Failed to buy asset");
     },
+    invalidate: ["stash", "market"],
   });
 
   if (isLoading) {
@@ -49,7 +50,7 @@ export default function Home() {
   }
 
   return (
-    <main className="flex h-full p-5">
+    <main className="flex flex-wrap h-full p-5">
       {data.length === 0 && <NoResult />}
       {data.map((item: any) => (
         <MarketCard
