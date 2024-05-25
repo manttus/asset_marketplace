@@ -1,5 +1,6 @@
 "use client";
 
+import { ethers } from "ethers";
 import Card from "../components/common/card/card";
 import Loader from "../components/loading/loader";
 import NoResult from "../components/loading/no_result";
@@ -11,7 +12,7 @@ import listingAdapter from "./adapter/listing_adapter";
 import stashService from "./services/stash_service";
 
 export default function Home() {
-  const { account } = useAccount();
+  const { account, updateBalance } = useAccount();
   const { success, error } = useToastify();
 
   const { data, isLoading, isError } = useAsyncQuery({
@@ -29,8 +30,13 @@ export default function Home() {
       const response = await stashService();
       return response.listAsset(data.index, data.price);
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       success("Asset listed in market");
+      const balance = await window.ethereum.request({
+        method: "eth_getBalance",
+        params: [account, "latest"],
+      });
+      updateBalance(+ethers.formatEther(balance).slice(0, 5));
     },
     onError: (_) => {
       error("Failed to list asset");
@@ -44,8 +50,13 @@ export default function Home() {
       const response = await stashService();
       return response.removeList(data.index);
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       success("Asset removed from market");
+      const balance = await window.ethereum.request({
+        method: "eth_getBalance",
+        params: [account, "latest"],
+      });
+      updateBalance(+ethers.formatEther(balance).slice(0, 5));
     },
     onError: (_) => {
       error("Failed to remove asset");

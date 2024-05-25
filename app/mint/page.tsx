@@ -18,6 +18,7 @@ import mintFormResolver from "./resolver/mint_resolver";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useToastify from "../hooks/useToastify";
+import { ethers } from "ethers";
 
 interface IMintForm {
   asset: FileList;
@@ -40,7 +41,7 @@ export default function Home() {
     resolver: zodResolver(mintFormResolver),
   });
 
-  const { account } = useAccount();
+  const { account, updateBalance } = useAccount();
   const { pinImage } = usePinata();
   const { success, error } = useToastify();
 
@@ -51,8 +52,13 @@ export default function Home() {
       const minted = await response.mint(data);
       return minted;
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       success("Asset Minted");
+      const balance = await window.ethereum.request({
+        method: "eth_getBalance",
+        params: [account, "latest"],
+      });
+      updateBalance(+ethers.formatEther(balance).slice(0, 5));
     },
     onError: (_) => {
       error("Failed to mint");

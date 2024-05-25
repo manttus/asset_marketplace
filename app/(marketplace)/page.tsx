@@ -1,5 +1,6 @@
 "use client";
 
+import { ethers } from "ethers";
 import MarketCard from "../components/common/market/card/market_card";
 import Loader from "../components/loading/loader";
 import NoResult from "../components/loading/no_result";
@@ -17,7 +18,7 @@ type MarketListing = {
 };
 
 export default function Home() {
-  const { account } = useAccount();
+  const { account, updateBalance } = useAccount();
 
   const { data, isLoading } = useAsyncQuery({
     key: ["market", account],
@@ -36,8 +37,13 @@ export default function Home() {
       const response = await marketService();
       return response.buyToken(payload.index, payload.price);
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       success("Asset purchased succesfully");
+      const balance = await window.ethereum.request({
+        method: "eth_getBalance",
+        params: [account, "latest"],
+      });
+      updateBalance(+ethers.formatEther(balance).slice(0, 5));
     },
     onError: (_) => {
       error("Failed to buy asset");
