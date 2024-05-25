@@ -15,7 +15,7 @@ export default function Home() {
   const { success, error } = useToastify();
 
   const { data, isLoading, isError } = useAsyncQuery({
-    key: ["stash"],
+    key: ["stash", account],
     fn: async () => {
       const response = await stashService();
       return response.getMinted(account);
@@ -35,6 +35,7 @@ export default function Home() {
     onError: (_) => {
       error("Failed to list asset");
     },
+    invalidate: ["stash", "market"],
   });
 
   const { mutateAsync: removeMutateAsync } = useAsyncMutation({
@@ -49,6 +50,7 @@ export default function Home() {
     onError: (_) => {
       error("Failed to remove asset");
     },
+    invalidate: ["stash", "market"],
   });
 
   if (isLoading) {
